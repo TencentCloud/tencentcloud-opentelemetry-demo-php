@@ -313,7 +313,7 @@
    ```
 
 #### 
-### 完整接入文档可参考 [腾讯云可监控平台官方文档](https://cloud.tencent.com/document/product/248/101074)。
+### 完整接入文档可参考 [腾讯云观测平台官方文档](https://cloud.tencent.com/document/product/248/101074)。
 
 
 
