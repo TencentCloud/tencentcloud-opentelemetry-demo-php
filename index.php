@@ -105,7 +105,7 @@ $app->get(
         // 获取 tracer
         $tracer = Globals::tracerProvider()->getTracer('my-tracer');
         // 创建 Span
-        $span3 = $tracer->spanBuilder('/error')->startSpan();
+        $span3 = $tracer->spanBuilder('/error')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
         try {
             // 模拟代码发生异常
             throw new \Exception('exception!');
