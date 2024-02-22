@@ -46,11 +46,11 @@
 
 #### 
 
-#### 构建OpenTelemetry PHP扩展
+#### 构建OpenTelemetry PHP扩展（需PHP 8.0+，仅使用手动埋点可以跳过改步骤）
 
 > **说明：**
 > 
-> 如果已经构建过OpenTelemetry PHP扩展，可跳过当前步骤。
+> 如果已经构建过OpenTelemetry PHP扩展，或者仅使用自动埋点可跳过当前步骤。
 > 
 
 1. 下载构建OpenTelemetry PHP extension所需要的工具：
@@ -203,10 +203,16 @@
 
    ``` php
    <?php
-   
+
    use OpenTelemetry\API\Globals;
+   use OpenTelemetry\API\Trace\StatusCode;
+   use OpenTelemetry\API\Trace\SpanKind;
    use OpenTelemetry\SDK\Common\Attribute\Attributes;
    use OpenTelemetry\SDK\Trace\TracerProvider;
+   
+   use Psr\Http\Message\ResponseInterface as Response;
+   use Psr\Http\Message\ServerRequestInterface as Request;
+   use Slim\Factory\AppFactory;
    
    require __DIR__ . '/opentelemetry_util.php';
    ```
@@ -226,8 +232,8 @@
    $app->get('/rolldice', function (Request $request, Response $response) {
     // 获取 tracer
     $tracer = \OpenTelemetry\API\Globals::tracerProvider()->getTracer('my-tracer');
-    // 创建 Span
-    $span = $tracer->spanBuilder("/rolldice")->startSpan();
+    // 创建 Span; 设置span kind，不设置默认为KIND_INTERNAL
+    $span = $tracer->spanBuilder('/rolldice')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
     // 为 Span 设置属性
     $span->setAttribute("http.method", "GET");
     // 为 Span 设置事件
@@ -262,7 +268,7 @@
     // 获取 tracer
     $tracer = \OpenTelemetry\API\Globals::tracerProvider()->getTracer('my-tracer');
     // 创建 Span
-    $parentSpan = $tracer->spanBuilder("/rolltwodices/parent")->startSpan();
+    $parentSpan = $tracer->spanBuilder("/rolltwodices/parent")->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
     $scope = $parentSpan->activate();
    
     $value1 = random_int(1,6);
@@ -295,7 +301,7 @@
     // 获取 tracer
     $tracer = \OpenTelemetry\API\Globals::tracerProvider()->getTracer('my-tracer');
     // 创建 Span
-    $span3 = $tracer->spanBuilder("/error")->startSpan();
+    $span3 = $tracer->spanBuilder("/error")->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
     try {
     // 模拟代码发生异常
     throw new \Exception('exception!');

@@ -2,6 +2,7 @@
 
 use OpenTelemetry\API\Globals;
 use OpenTelemetry\API\Trace\StatusCode;
+use OpenTelemetry\API\Trace\SpanKind;
 use OpenTelemetry\SDK\Common\Attribute\Attributes;
 use OpenTelemetry\SDK\Trace\TracerProvider;
 
@@ -30,8 +31,8 @@ $app->get(
     ) {
         // 获取 tracer
         $tracer = Globals::tracerProvider()->getTracer('my-tracer');
-        // 创建 Span
-        $span = $tracer->spanBuilder('/rolldice')->startSpan();
+        // 创建 Span; 设置span kind，不设置默认为KIND_INTERNAL
+        $span = $tracer->spanBuilder('/rolldice')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
         // 为 Span 设置属性
         $span->setAttribute('http.method', 'GET');
         // 为 Span 设置事件
@@ -70,7 +71,7 @@ $app->get(
         // 获取 tracer
         $tracer = Globals::tracerProvider()->getTracer('my-tracer');
         // 创建 Span
-        $parentSpan = $tracer->spanBuilder('/rolltwodices/parent')->startSpan();
+        $parentSpan = $tracer->spanBuilder('/rolltwodices/parent')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
         $scope      = $parentSpan->activate();
 
         $value1 = random_int(1, 6);
@@ -104,7 +105,7 @@ $app->get(
         // 获取 tracer
         $tracer = Globals::tracerProvider()->getTracer('my-tracer');
         // 创建 Span
-        $span3 = $tracer->spanBuilder('/error')->startSpan();
+        $span3 = $tracer->spanBuilder('/error')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
         try {
             // 模拟代码发生异常
             throw new \Exception('exception!');

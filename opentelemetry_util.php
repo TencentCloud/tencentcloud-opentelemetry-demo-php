@@ -26,9 +26,9 @@ function initOpenTelemetry()
         ResourceInfo::create(
             Attributes::create(
                 [
-                ResourceAttributes::SERVICE_NAME => 'your-service-name', # 应用名，必填
-                ResourceAttributes::HOST_NAME => 'your-host-name', # 主机名，选填
-                'token' => 'xxxxxxxxxx' # 替换成控制台拿到的Token
+                ResourceAttributes::SERVICE_NAME => 'your-service-name', // 应用名，必填
+                ResourceAttributes::HOST_NAME => 'your-host-name', // 主机名，选填
+                'token' => 'xxxxxxxxxx' // 替换成控制台拿到的Token
                 ]
             )
         )
